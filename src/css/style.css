@@ -1483,7 +1483,7 @@ body {
     max-height: 90vh;
     position: absolute;
     opacity: 0;
-    transition: 0.2s allow-discrete;
+    transition: 0.4s allow-discrete;
     transition-delay: 0.1s;
 }
 .modal.show .modal-content {

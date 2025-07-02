@@ -8,6 +8,7 @@ import { configModal } from './components/modal/configModal.js';
 import { groupEditModal } from './components/modal/groupEditModal.js';
 import { reservationDetailModal } from './components/modal/reservationDetailModal.js';
 import { reservationModal } from './components/modal/reservationModal.js';
+import { setupModalDrag } from './utils/modalDrag.js';
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -72,6 +73,9 @@ function initModalButtons() {
 function showModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+        // ドラッグ機能を設定
+        setupModalDrag(modal);
+        // モーダルを表示
         modal.classList.add('show');
     }
 }
@@ -89,3 +93,4 @@ function initModalOverlayClose() {
         });
     });
 }
+
