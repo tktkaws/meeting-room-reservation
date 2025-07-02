@@ -250,7 +250,6 @@ function createCurrentTimeLine(getCurrentDate) {
 
     // 位置を計算（cellHeight per slot + offset）
     const position = slotIndex * cellHeight + (slotOffset * cellHeight);
-    console.log("cellHeight", cellHeight);
 
     return `<div class="current-time-line" style="top: ${position}px;">
                 <div class="current-time-marker"></div>

@@ -21,11 +21,11 @@ export function renderSidebar() {
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            <button id="new-reservation-btn" class="btn-primary btn-new-reservation">reservation-detail-modal</button>
-            <button id="new-reservation-btn" class="btn-primary btn-new-reservation">group-edit-modal</button>
-            <button id="new-reservation-btn" class="btn-primary btn-new-reservation">reservation-modal</button>
-            <button id="new-reservation-btn" class="btn-primary btn-new-reservation">auth-modal</button>
-            <button id="new-reservation-btn" class="btn-primary btn-new-reservation">config-modal</button>
+            <button id="reservation-detail-modal-btn" class="btn-primary btn-new-reservation">reservation-detail-modal</button>
+            <button id="group-edit-modal-btn" class="btn-primary btn-new-reservation">group-edit-modal</button>
+            <button id="reservation-modal-btn" class="btn-primary btn-new-reservation">reservation-modal</button>
+            <button id="auth-modal-btn" class="btn-primary btn-new-reservation">auth-modal</button>
+            <button id="config-modal-btn" class="btn-primary btn-new-reservation">config-modal</button>
 
             <!-- ユーザー情報セクション -->
             <div class="sidebar-section sidebar-user-info" id="sidebar-user-section">
@@ -123,6 +123,3 @@ export function renderSidebar() {
         sidebar.innerHTML = sidebarHTML;
     }
 }
-
-// グローバルにエクスポート
-window.renderSidebar = renderSidebar; 
