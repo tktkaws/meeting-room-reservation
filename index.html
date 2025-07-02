@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会議室予約システム</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        rel="stylesheet">
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+
+<body>
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <main class="main-content" id="main-content"></main>
+    <!-- 予約詳細モーダル -->
+    <div id="reservation-detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>予約詳細</h2>
+                <div class="detail-actions" id="detail-actions">
+                    <!-- 編集ボタンは権限に応じて動的に追加 -->
+                </div>
+                <button class="close-btn" id="close-detail-modal"><img src="src/images/close.svg" alt=""
+                        class="material-icon"></button>
+            </div>
+            <div class="detail-content">
+                <div class="detail-section">
+                    <div class="detail-item">
+                        <label>日付</label>
+                        <span id="detail-date"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>時間</label>
+                        <span id="detail-time"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>タイトル</label>
+                        <span id="detail-title"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>予約者</label>
+                        <span id="detail-user"></span>
+                    </div>
+                    <div class="detail-item">
+                        <label>説明</label>
+                        <span id="detail-description"></span>
+                    </div>
+                </div>
+
+                <div id="recurring-section" class="detail-section" style="display: none;">
+                    <div class="recurring-section-header">
+                        <h3>繰り返し予約情報</h3>
+                        <div class="recurring-detail-actions" id="recurring-detail-actions">
+                            <!-- 繰り返し予約用の編集・削除ボタン -->
+                        </div>
+                    </div>
+                    <div id="group-reservations">
+                        <div id="group-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- グループ編集モーダル -->
+    <div id="group-edit-modal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h2>全ての繰り返し予約を編集</h2>
+                <button class="close-btn" id="close-group-edit-modal"><img src="src/images/close.svg" alt=""
+                        class="material-icon"></button>
+            </div>
+            <form id="group-edit-form">
+                <div class="group-edit-content">
+                    <div class="group-basic-info">
+                        <div class="form-group">
+                            <label for="group-title">タイトル <span class="char-counter"
+                                    id="group-title-counter">0/50</span></label>
+                            <input type="text" id="group-title" name="title" required maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label for="group-description">説明 <span class="char-counter"
+                                    id="group-description-counter">0/400</span></label>
+                            <textarea id="group-description" name="description" rows="3" maxlength="400"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="group-time-info">
+                        <div class="time-form-row">
+                            <div class="form-group">
+                                <label for="group-start-hour">開始時間</label>
+                                <div class="time-select-group">
+                                    <select id="group-start-hour" name="start_hour">
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                    </select>
+                                    <span class="time-separator">時</span>
+                                    <select id="group-start-minute" name="start_minute">
+                                        <option value="0">00</option>
+                                        <option value="15">15</option>
+                                        <option value="30">30</option>
+                                        <option value="45">45</option>
+                                    </select>
+                                    <span class="time-separator">分</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="group-end-hour">終了時間</label>
+                                <div class="time-select-group">
+                                    <select id="group-end-hour" name="end_hour">
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                    </select>
+                                    <span class="time-separator">時</span>
+                                    <select id="group-end-minute" name="end_minute">
+                                        <option value="0">00</option>
+                                        <option value="15">15</option>
+                                        <option value="30">30</option>
+                                        <option value="45">45</option>
+                                    </select>
+                                    <span class="time-separator">分</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="group-reservations">
+                        <h3>繰り返し予約一覧</h3>
+                        <div id="group-reservations-list">
+                            <!-- 動的に生成される予約リスト -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="group-cancel-btn" class="btn-secondary">キャンセル</button>
+                    <button type="submit" class="btn-primary">すべて更新</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- 予約作成モーダル -->
+    <div id="reservation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">新規予約</h2>
+                <button class="close-btn" id="close-modal"><img src="src/images/close.svg" alt=""
+                        class="material-icon"></button>
+            </div>
+            <form id="reservation-form">
+                <div class="form-group">
+                    <label for="reservation-title">タイトル <span class="char-counter"
+                            id="title-counter">0/50</span></label>
+                    <input type="text" id="reservation-title" name="title" required maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="reservation-description">説明 <span class="char-counter"
+                            id="description-counter">0/400</span></label>
+                    <textarea id="reservation-description" name="description" rows="3" maxlength="400"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reservation-date">日付</label>
+                        <input type="date" id="reservation-date" name="date" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="start-hour">開始時間</label>
+                        <div class="time-select-group">
+                            <select id="start-hour" name="start_hour" required>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                            </select>
+                            <span class="time-separator">時</span>
+                            <select id="start-minute" name="start_minute" required>
+                                <option value="0">00</option>
+                                <option value="15">15</option>
+                                <option value="30">30</option>
+                                <option value="45">45</option>
+                            </select>
+                            <span class="time-separator">分</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="end-hour">終了時間</label>
+                        <div class="time-select-group">
+                            <select id="end-hour" name="end_hour" required>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                            </select>
+                            <span class="time-separator">時</span>
+                            <select id="end-minute" name="end_minute" required>
+                                <option value="0">00</option>
+                                <option value="15">15</option>
+                                <option value="30">30</option>
+                                <option value="45">45</option>
+                            </select>
+                            <span class="time-separator">分</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>繰り返し設定</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" id="recurring-no" name="is_recurring" value="no" checked>
+                            繰り返さない
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" id="recurring-yes" name="is_recurring" value="yes">
+                            繰り返す
+                        </label>
+                    </div>
+                </div>
+                <div id="recurring-options" style="display: none;">
+                    <div class="form-group">
+                        <label for="repeat-type">繰り返しパターン</label>
+                        <select id="repeat-type" name="repeat_type">
+                            <option value="daily">毎日</option>
+                            <option value="weekly" selected>毎週</option>
+                            <option value="biweekly">隔週</option>
+                            <option value="monthly">毎月</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="repeat-end-date">終了日</label>
+                        <input type="date" id="repeat-end-date" name="repeat_end_date">
+                    </div>
+                    <div class="form-group">
+                        <div id="recurring-preview" style="display: none;">
+                            <label>作成される予約一覧</label>
+                            <div id="recurring-dates-list" class="recurring-dates-preview">
+                                <!-- 予約日一覧がここに表示される -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancel-btn" class="btn-secondary">キャンセル</button>
+                    <button type="submit" class="btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- ローディング表示 -->
+    <div id="loading" class="loading" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- メッセージ表示 -->
+    <div id="message" class="message"></div>
+
+    <!-- ログイン・サインアップモーダル -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h2 id="auth-modal-title">ログイン</h2>
+                <button class="close-btn" id="close-auth-modal"><img src="src/images/close.svg" alt=""
+                        class="material-icon"></button>
+            </div>
+
+            <!-- ログインフォーム -->
+            <div id="login-form" class="auth-form">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="login-email">メールアドレス</label>
+                        <input type="email" id="login-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">パスワード</label>
+                        <input type="password" id="login-password" name="password" required>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="remember-me" name="remember_me" checked>
+                            <span>ログイン状態を保持する</span>
+                        </label>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" id="cancel-auth-btn" class="btn-secondary">キャンセル</button>
+                        <button type="submit" class="btn-primary">ログイン</button>
+                    </div>
+                </form>
+                <p class="form-switch">
+                    【テストユーザー】<br>
+                    メールアドレス：takahashi@example.com<br>
+                    パスワード：takahashi123
+                </p>
+                <p class="form-switch">
+                    【テスト管理者ユーザー】<br>
+                    メールアドレス：admin@example.com<br>
+                    パスワード：admin123
+                </p>
+                <p class="form-switch">
+                    アカウントをお持ちでない方は
+                    <a href="#" id="show-register">新規登録</a>
+                </p>
+            </div>
+
+            <!-- 新規登録フォーム -->
+            <div id="register-form" class="auth-form" style="display: none;">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="register-name">氏名</label>
+                        <input type="text" id="register-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">メールアドレス</label>
+                        <input type="email" id="register-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">パスワード</label>
+                        <input type="password" id="register-password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-department">部署</label>
+                        <input type="text" id="register-department" name="department">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" id="cancel-register-btn" class="btn-secondary">キャンセル</button>
+                        <button type="submit" class="btn-primary">登録</button>
+                    </div>
+                </form>
+                <p class="form-switch">
+                    既にアカウントをお持ちの方は
+                    <a href="#" id="show-login">ログイン</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 設定モーダル -->
+    <div id="config-modal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h2>ユーザー設定</h2>
+                <button class="close-btn" id="close-config-modal"><img src="src/images/close.svg" alt=""
+                        class="material-icon"></button>
+            </div>
+            <div class="config-content">
+                <!-- プロフィール設定 -->
+                <div class="config-section">
+                    <h3>プロフィール設定</h3>
+                    <form id="user-config-form" class="config-form">
+                        <div class="form-group">
+                            <label for="user-name">名前 <span class="required">*</span></label>
+                            <input type="text" id="user-name" name="name" required placeholder="氏名を入力してください"
+                                maxlength="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="user-email">メールアドレス <span class="required">*</span></label>
+                            <input type="email" id="user-email" name="email" required placeholder="email@example.com"
+                                maxlength="255">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="user-department">部署</label>
+                            <select id="user-department" name="department">
+                                <!-- 部署データが動的に読み込まれます -->
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email-notification-type">メール通知設定</label>
+                            <select id="email-notification-type" name="email_notification_type">
+                                <option value="1">予約変更通知</option>
+                                <option value="2">送信しない</option>
+                            </select>
+                            <small class="form-help">予約の変更時にメールで通知するか選択してください</small>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" id="save-btn" class="btn btn-primary">設定を保存</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- パスワード変更 -->
+                <div class="config-section">
+                    <h3>パスワード変更</h3>
+                    <form id="password-change-form" class="config-form">
+                        <div class="form-group">
+                            <label for="current-password">現在のパスワード <span class="required">*</span></label>
+                            <input type="password" id="current-password" name="current_password" required
+                                placeholder="現在のパスワードを入力">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="new-password">新しいパスワード <span class="required">*</span></label>
+                            <input type="password" id="new-password" name="new_password" required
+                                placeholder="新しいパスワードを入力（6文字以上）" minlength="6">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirm-password">新しいパスワード（確認） <span class="required">*</span></label>
+                            <input type="password" id="confirm-password" name="confirm_password" required
+                                placeholder="新しいパスワードを再度入力">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" id="change-password-btn" class="btn btn-primary">パスワードを変更</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="src/js/main.js" type="module"></script>
+</body>
+
+</html>
