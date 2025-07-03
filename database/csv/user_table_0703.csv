@@ -1,0 +1,4 @@
+﻿name,email,password,role,department_id,"default_tag_id	",email_notification_type,tag_colors
+田中太郎,tanaka@example.com,tanaka,user,1,1,1,
+鈴木太郎,suzuki@example.com,suzuki,user,1,1,1,
+佐藤太郎,sato@example.com,sato,user,1,1,1,
