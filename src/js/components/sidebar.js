@@ -1,14 +1,23 @@
 /**
  * サイドバーコンポーネント
  */
+import { getDepartmentName } from '../utils/auth.js';
+
 export function renderSidebar() {
-    const user = {
-        name: '山田太郎',
-        department: '営業部',
-        role: 'user',
+    // 認証情報を AuthStore から取得
+    const authStore = window.AuthStore || { 
+        isLogin: false, 
+        isAdmin: false, 
+        user: { name: '', department_id: null } 
     };
-    const isAdmin = user.role === 'admin';
-    const isLogin = true;
+    
+    const user = {
+        name: authStore.user.name || 'ゲスト',
+        department: getDepartmentName(authStore.user.department_id),
+        role: authStore.user.role || 'user',
+    };
+    const isAdmin = authStore.isAdmin;
+    const isLogin = authStore.isLogin;
     
     const sidebarHTML = `
         <div class="sidebar-content">
@@ -115,5 +124,37 @@ export function renderSidebar() {
     const sidebar = document.getElementById('sidebar');
     if (sidebar) {
         sidebar.innerHTML = sidebarHTML;
+        
+        // ログアウトボタンのイベントリスナー追加
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async () => {
+                const { logout } = await import('../utils/auth.js');
+                const success = await logout();
+                if (success) {
+                    // ページを再読み込みしてUIを更新
+                    location.reload();
+                }
+            });
+        }
+    }
+}
+
+/**
+ * サイドバーを認証状態に応じて更新
+ */
+export function updateSidebar() {
+    renderSidebar();
+}
+
+/**
+ * 認証状態変更時のサイドバー更新リスナーを設定
+ */
+export function initSidebarAuthListener() {
+    if (window.AuthStore) {
+        window.AuthStore.addListener((authStore) => {
+            console.log('認証状態変更検知 - サイドバー更新:', authStore);
+            updateSidebar();
+        });
     }
 }

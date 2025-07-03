@@ -4,7 +4,7 @@
 import { renderCalendar, switchView, navigateDate, goToToday } from '../renderCalender.js';
 
 export function renderMainContent() {
-    const isLogin = true;
+    const isLogin = window.AuthStore.isLogin;
     const mainContentHTML = `
         <!-- ツールバー -->
         <div class="toolbar">
@@ -53,4 +53,23 @@ function initializeViewButtons() {
     
     // 初期状態でmonth-viewをactiveに設定
     document.getElementById('month-view')?.classList.add('active');
+}
+
+/**
+ * メインコンテンツを認証状態に応じて更新
+ */
+export function updateMainContent() {
+    renderMainContent();
+}
+
+/**
+ * 認証状態変更時のメインコンテンツ更新リスナーを設定
+ */
+export function initMainContentAuthListener() {
+    if (window.AuthStore) {
+        window.AuthStore.addListener((authStore) => {
+            console.log('認証状態変更検知 - メインコンテンツ更新:', authStore);
+            updateMainContent();
+        });
+    }
 }
