@@ -10,7 +10,6 @@ import { reservationDetailModal } from './components/modal/reservationDetailModa
 import { reservationModal } from './components/modal/reservationModal.js';
 import { setupModalDrag } from './utils/modalDrag.js';
 
-
 document.addEventListener('DOMContentLoaded', () => {
     renderSidebar();
     renderMainContent();
@@ -27,40 +26,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // イベントリスナー設定
 function initModalButtons() {
-    // reservation-detail-modal表示
-    const reservationDetailBtn = document.getElementById('reservation-detail-modal-btn');
-    if (reservationDetailBtn) {
-        reservationDetailBtn.addEventListener('click', () => {
-            showModal('reservation-detail-modal');
-        });
-    }
-
-    // group-edit-modal表示
-    const groupEditBtn = document.getElementById('group-edit-modal-btn');
-    if (groupEditBtn) {
-        groupEditBtn.addEventListener('click', () => {
-            showModal('group-edit-modal');
-        });
-    }
-
-    // reservation-modal表示
-    const reservationBtn = document.getElementById('reservation-modal-btn');
-    if (reservationBtn) {
-        reservationBtn.addEventListener('click', () => {
-            showModal('reservation-modal');
-        });
-    }
-
     // auth-modal表示
-    const authBtn = document.getElementById('auth-modal-btn');
+    const authBtn = document.getElementById('login-btn');
+    console.log(authBtn)
     if (authBtn) {
         authBtn.addEventListener('click', () => {
             showModal('auth-modal');
         });
     }
 
+    // reservation-detail-modal表示
+    // const reservationDetailBtn = document.getElementById('reservation-detail-modal-btn');
+    // if (reservationDetailBtn) {
+    //     reservationDetailBtn.addEventListener('click', () => {
+    //         showModal('reservation-detail-modal');
+    //     });
+    // }
+
+    // group-edit-modal表示
+    // const groupEditBtn = document.getElementById('group-edit-modal-btn');
+    // if (groupEditBtn) {
+    //     groupEditBtn.addEventListener('click', () => {
+    //         showModal('group-edit-modal');
+    //     });
+    // }
+
+    // reservation-modal表示
+    const reservationBtn = document.getElementById('new-reservation-btn');
+    if (reservationBtn) {
+        reservationBtn.addEventListener('click', () => {
+            showModal('reservation-modal');
+        });
+    }
+
     // config-modal表示
-    const configBtn = document.getElementById('config-modal-btn');
+    const configBtn = document.getElementById('config-btn');
     if (configBtn) {
         configBtn.addEventListener('click', () => {
             showModal('config-modal');

@@ -8,7 +8,7 @@ export function renderSidebar() {
         role: 'user',
     };
     const isAdmin = user.role === 'admin';
-    const isLogin = false;
+    const isLogin = true;
     
     const sidebarHTML = `
         <div class="sidebar-content">
@@ -21,12 +21,6 @@ export function renderSidebar() {
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            <button id="reservation-detail-modal-btn" class="btn-primary btn-new-reservation">reservation-detail-modal</button>
-            <button id="group-edit-modal-btn" class="btn-primary btn-new-reservation">group-edit-modal</button>
-            <button id="reservation-modal-btn" class="btn-primary btn-new-reservation">reservation-modal</button>
-            <button id="auth-modal-btn" class="btn-primary btn-new-reservation">auth-modal</button>
-            <button id="config-modal-btn" class="btn-primary btn-new-reservation">config-modal</button>
-
             <!-- ユーザー情報セクション -->
             <div class="sidebar-section sidebar-user-info" id="sidebar-user-section">
                 ${isLogin ? `
